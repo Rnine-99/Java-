@@ -4,9 +4,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-/**
- * 服务器线程，主要来处理多个客户端的请求
- */
 public class ServerThread extends Server implements Runnable {
 
     Socket socket;
@@ -20,7 +17,6 @@ public class ServerThread extends Server implements Runnable {
     public void run() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //设置该客户端的端点地址
             socketName = socket.getRemoteSocketAddress().toString();
             System.out.println("Client@" + socketName + "join the chatroom");
             radio("Client@" + socketName + "join the chatroom");
@@ -35,7 +31,6 @@ public class ServerThread extends Server implements Runnable {
                 }
                 String msg = "Client@" + socketName + ":" + line;
                 System.out.println(msg);
-                //向在线客户端输出信息
                 radio(msg);
             }
 
@@ -53,8 +48,7 @@ public class ServerThread extends Server implements Runnable {
         PrintWriter out = null;
         synchronized (Server.sockets) {
             for (Socket sc : Server.sockets) {
-                if (socket.equals(sc))
-                    continue;
+                if (socket.equals(sc)) continue;
                 out = new PrintWriter(sc.getOutputStream());
                 out.println(msg);
                 out.flush();
@@ -64,7 +58,6 @@ public class ServerThread extends Server implements Runnable {
 
     /**
      * 关闭该socket的连接
-     *
      */
     public void closeConnect() throws IOException {
         System.out.println("Client@" + socketName + "已退出聊天");
