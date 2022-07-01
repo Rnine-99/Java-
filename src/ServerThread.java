@@ -18,22 +18,20 @@ public class ServerThread extends Server implements Runnable {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             socketName = socket.getRemoteSocketAddress().toString();
-            System.out.println("Client@" + socketName + "join the chatroom");
-            radio("Client@" + socketName + "join the chatroom");
+            System.out.println("Client@" + socketName + " joined the chatroom");
+            radio("Client@" + socketName + " joined the chatroom");
             boolean flag = true;
             while (flag) {
-                //阻塞，等待该客户端的输出流
                 String line = reader.readLine();
                 //若客户端退出，则退出连接。
                 if (line == null) {
                     flag = false;
                     continue;
                 }
-                String msg = "Client@" + socketName + ":" + line;
+                String msg = "Client@" + socketName + ": " + line;
                 System.out.println(msg);
                 radio(msg);
             }
-
             closeConnect();
         } catch (IOException e) {
             try {
@@ -45,7 +43,7 @@ public class ServerThread extends Server implements Runnable {
     }
 
     private void radio(String msg) throws IOException {
-        PrintWriter out = null;
+        PrintWriter out;
         synchronized (Server.sockets) {
             for (Socket sc : Server.sockets) {
                 if (socket.equals(sc)) continue;
@@ -60,8 +58,8 @@ public class ServerThread extends Server implements Runnable {
      * 关闭该socket的连接
      */
     public void closeConnect() throws IOException {
-        System.out.println("Client@" + socketName + "已退出聊天");
-        radio("Client@" + socketName + "已退出聊天");
+        System.out.println("Client@" + socketName + " has left the chatroom");
+        radio("Client@" + socketName + " has left the chatroom");
         //移除没连接上的客户端
         synchronized (Server.sockets) {
             Server.sockets.remove(socket);
